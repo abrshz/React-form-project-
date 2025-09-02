@@ -1,6 +1,7 @@
 import './App.css'
 import Header from './components/Header'
 import Login from './components/Login'
+import SignUp from './components/SignUp'
 
 function App() {
 
@@ -8,7 +9,8 @@ function App() {
     <>
     <Header />
     <main>
-      <Login />
+      {/* <Login /> */}
+      <SignUp />
     </main>
     </>
   )
