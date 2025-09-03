@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import Input from './Input';
+import {isEmail, isNotEmpty , hasMinLength} from "../utilities/balidation"
 
 function Login() {
   const [enterValues, setEnterValues] = useState({ 
@@ -17,8 +18,8 @@ function Login() {
        
     }
 
-    const emailIsInvalid = didEdit.email  && !enterValues.email.includes('@');
-    const passwordIsInvalid = didEdit.password && enterValues.password.trim().length < 6;
+    const emailIsInvalid = didEdit.email  && !isEmail(enterValues.email) && isNotEmpty(enterValues.email)
+    const passwordIsInvalid = didEdit.password &&  !hasMinLength(enterValues.password , 6);
 
     function handleInputChange (identifier , event){
     setEnterValues(prevValues =>({
