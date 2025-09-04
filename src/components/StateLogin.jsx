@@ -1,42 +1,14 @@
 import React, { useState } from 'react'
 import Input from './Input';
 import {isEmail, isNotEmpty , hasMinLength} from "../utilities/balidation"
+import { useInput } from '../hooks/useInput';
 
 function Login() {
-  const [enterValues, setEnterValues] = useState({ 
-    email: '',
-    password: ''
-    });
 
-    const [didEdit, setDidEdit ] = useState({
-      email : false,
-      password : false
-    })
-
-    function handleSubmit(event) {
-        event.preventDefault()
-       
-    }
+  const {value: emailValue ,handleInputChange: handleInputChange, handleInputBlur: handleInputBlur} = useInput('');
 
     const emailIsInvalid = didEdit.email  && !isEmail(enterValues.email) && isNotEmpty(enterValues.email)
     const passwordIsInvalid = didEdit.password &&  !hasMinLength(enterValues.password , 6);
-
-    function handleInputChange (identifier , event){
-    setEnterValues(prevValues =>({
-      ...prevValues,
-      [identifier]: event
-    }));
-    setDidEdit(prevEdit => ({
-        ...prevEdit , [identifier] : false,
-      }))
-    }
-
-    function handleInputBlur (identifier) {
-      setDidEdit(prevEdit => ({
-        ...prevEdit , [identifier] : true,
-      }))
-
-    }
 
   return (
       <form onSubmit={handleSubmit}>
