@@ -5,10 +5,21 @@ import { useInput } from '../hooks/useInput';
 
 function Login() {
 
-  const {value: emailValue ,handleInputChange: handleInputChange, handleInputBlur: handleInputBlur} = useInput('');
+  const {value: emailValue , handleInputChange: handleInputChange, handleInputBlur: handleInputBlur, hasError: emailHasError } = useInput('', (value) => isEmail(value) && isNotEmpty(value));
 
-    const emailIsInvalid = didEdit.email  && !isEmail(enterValues.email) && isNotEmpty(enterValues.email)
-    const passwordIsInvalid = didEdit.password &&  !hasMinLength(enterValues.password , 6);
+  const {value: passwordValue , handleInputChange: handlePasswordChange , handleInputBlur: handlePasswordBlur, hasError: passwordHasError } = useInput('', (value) => hasMinLength(value,6))
+
+    function handleSubmit (event) {
+      event.preventDefault();
+
+      if (emailHasError || passwordHasError) {
+        return;
+      }
+
+      console.log(emailValue , passwordValue);
+
+    }
+
 
   return (
       <form onSubmit={handleSubmit}>
@@ -20,19 +31,19 @@ function Login() {
       type="email"
       name="email" 
       onBlur={() => handleInputBlur('email')}
-      onChange = {(event) => handleInputChange('email', event.target.value)}
-      value ={enterValues.email}
-      error={emailIsInvalid && 'Please enter a valid email '} />
+      onChange = {handleInputChange}
+      value ={emailValue}
+      error={emailHasError && 'Please enter a valid email '} />
 
       <Input 
       label="Password" 
       id="password"
       type="password"
       name="password" 
-      onBlur={() => handleInputBlur('password')}
-      onChange = {(event) => handleInputChange('password', event.target.value)}
-      value ={enterValues.password}
-      error={passwordIsInvalid && 'Please enter a valid password'} />
+      onBlur={handlePasswordBlur}
+      onChange = {handlePasswordChange}
+      value ={passwordValue}
+      error={passwordHasError && 'Please enter a valid password'} />
       </div>
       
       <p className="form-actions">
