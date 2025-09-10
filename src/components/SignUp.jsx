@@ -1,27 +1,76 @@
 import React, { useState } from 'react'
+import { useActionState } from 'react';
+import {isEmail , isNotEmpty , isEqualToOtherValue , hasMinLength } from "../utilities/validation"
 
 function SignUp() {
 
-  const [passwordNotSame, setPasswordNotSame] = useState(false);
+  // const [passwordNotSame, setPasswordNotSame] = useState(false);
 
-    function handleSubmit (event) {
-        event.preventDefault();
+    function handleSubmit (prevFormState , formData) {
+        // event.preventDefault();
 
-        const fd = new FormData(event.target);
-        const acquisitionChannel = fd.getAll('acquisition');
-        const data = Object.fromEntries(fd.entries());
-        data.acquisitionChannel = acquisitionChannel;
+        const email = formData.get('email')
+        const password = formData.get('password')
+        const confirmPassword = formData.get('confirm-password')
+        const firstName = formData.get('first-name')
+        const lastName = formData.get('last-name')
+        const role = formData.get('role')
+        const terms = formData.get('terms')
+        const acquisitionChannel = formData.getAll('acquisition')
 
-        if(data.password !== data['confirm-password']) {
-          setPasswordNotSame(true)
-          return;
+        let errors = [];
+
+        if(!isEmail(email)){
+          errors.push('Invalid email address')
         }
-        console.log(data);
 
-        event.target.reset();
+        if(isNotEmpty(password) || !hasMinLength(password , 6)) {
+          errors.push('You must provide a password with at least six characters.')
+        }
+
+        if(!isEqualToOtherValue(password , confirmPassword)) {
+          errors.push('Password do not match.')
+        }
+
+        if(!isNotEmpty(firstName) || !isNotEmpty(lastName)){
+          errors.push('Please provide both your first and last name.')
+        }
+
+        if(!isNotEmpty(role)){
+          errors.push('Please select a role.')
+        }
+
+        if(!terms){
+          errors.push('You must agree to the terms and conditions.')
+        }
+
+        if(acquisitionChannel.legend == 0){
+          errors.push('Please select at least one acquisition channel.')
+        }
+
+        if(errors.length > 0) {
+          return{errors}
+        }
+
+        return {errors: null}
+
+
+        // const fd = new FormData(event.target);
+        // const acquisitionChannel = fd.getAll('acquisition');
+        // const data = Object.fromEntries(fd.entries());
+        // data.acquisitionChannel = acquisitionChannel;
+
+        // if(data.password !== data['confirm-password']) {
+        //   setPasswordNotSame(true)
+        //   return;
+        // }
+        // console.log(data);
+
+        // event.target.reset();
     }
+  const [formState , formAction] =  useActionState(handleSubmit, {errors: null} )
   return (  
-    <form action={handleSubmit}>
+    <form action={formAction}>
       <h2>Welcome on board!</h2>
       <p>We just need a little bit of data from you to get you started 🚀</p>
 
@@ -44,7 +93,7 @@ function SignUp() {
             name="confirm-password"
             required
           />
-          <div className="control-error">{passwordNotSame && <p>Passwords must match!</p>}</div>
+          {/* <div className="control-error">{passwordNotSame && <p>Passwords must match!</p>}</div> */}
         </div>
       </div>
 
@@ -107,6 +156,12 @@ function SignUp() {
           agree to the terms and conditions
         </label>
       </div>
+
+      {formState.errors && <ul className='errors'>
+        {formState.errors.map((error) =>(
+          <li key={error}>{error}</li>
+        ) )}
+        </ul>}
 
       <p className="form-actions">
         <button type="reset" className="button button-flat">

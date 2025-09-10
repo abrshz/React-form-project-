@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import Input from './Input';
-import {isEmail, isNotEmpty , hasMinLength} from "../utilities/balidation"
+import {isEmail, isNotEmpty , hasMinLength} from "../utilities/validation"
 import { useInput } from '../hooks/useInput';
 
 function Login() {
